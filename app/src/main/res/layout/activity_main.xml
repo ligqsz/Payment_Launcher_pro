@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    android:background="@mipmap/launcher_bg"
+    android:fitsSystemWindows="false"
     tools:context="com.pax.paylauncher.ui.activity.MainActivity">
 
     <android.support.v7.widget.RecyclerView

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/item_app"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -11,13 +12,16 @@
         android:layout_gravity="center"
         android:orientation="vertical">
 
-        <ImageView
+        <com.pax.paylauncher.view.RedPointImageView
             android:id="@+id/app_icon"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_gravity="center_horizontal"
             android:scaleType="fitCenter"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@mipmap/ic_launcher"
+            app:point_color="@android:color/holo_red_dark"
+            app:point_content="1"
+            app:point_size="10dp" />
 
         <TextView
             android:id="@+id/app_name"

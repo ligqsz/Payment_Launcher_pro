@@ -15,9 +15,7 @@ import java.util.List;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
 public abstract class CommonAdapter<T> extends MultiItemTypeAdapter<T> {
-    protected Context mContext;
     protected int mLayoutId;
-    protected List<T> mDatas;
     protected LayoutInflater mInflater;
 
     public CommonAdapter(final Context context, final int layoutId, List<T> datas) {
