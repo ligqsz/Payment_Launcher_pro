@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import com.pax.paylauncher.adapter.common.base.ItemViewDelegate;
 import com.pax.paylauncher.adapter.common.base.ViewHolder;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -14,7 +15,7 @@ import java.util.List;
  */
 
 @SuppressWarnings({"WeakerAccess", "unused"})
-public abstract class CommonAdapter<T> extends MultiItemTypeAdapter<T> {
+public abstract class CommonAdapter<T> extends MultiItemTypeAdapter<T> implements RecycleItemTouchHelper.ItemTouchHelperCallback {
     protected int mLayoutId;
     protected LayoutInflater mInflater;
 
@@ -44,4 +45,17 @@ public abstract class CommonAdapter<T> extends MultiItemTypeAdapter<T> {
     }
 
     protected abstract void convert(ViewHolder holder, T t, int position);
+
+    @Override
+    public void onItemDelete(int position) {
+        mDatas.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    @Override
+    public void onMove(int fromPosition, int toPosition) {
+        //交换数据
+        Collections.swap(mDatas, fromPosition, toPosition);
+        notifyItemMoved(fromPosition, toPosition);
+    }
 }

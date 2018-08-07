@@ -7,11 +7,13 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -24,6 +26,7 @@ import com.pax.dal.entity.ENavigationKey;
 import com.pax.neptunelite.api.NeptuneLiteUser;
 import com.pax.paylauncher.R;
 import com.pax.paylauncher.adapter.common.CommonAdapter;
+import com.pax.paylauncher.adapter.common.RecycleItemTouchHelper;
 import com.pax.paylauncher.adapter.common.base.ViewHolder;
 import com.pax.paylauncher.view.RedPointImageView;
 
@@ -37,12 +40,14 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "test";
     private List<ResolveInfo> apps;
     private RedPointImageView clickImgView;
+    private Vibrator vibrator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         loadApps();
+        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         Log.i(TAG, "onCreate:apps size = " + apps.size());
         initView();
     }
@@ -51,11 +56,11 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView rvDesktop = findViewById(R.id.rv_desktop);
         GridLayoutManager manager = new GridLayoutManager(this, 3);
         rvDesktop.setLayoutManager(manager);
-        rvDesktop.setAdapter(new CommonAdapter<ResolveInfo>(this, R.layout.item_apps, apps) {
+        final CommonAdapter<ResolveInfo> adapter = new CommonAdapter<ResolveInfo>(this, R.layout.item_apps, apps) {
             @Override
             protected void convert(ViewHolder holder, final ResolveInfo info, final int position) {
                 Log.d(TAG, "packageName:" + info.activityInfo.packageName);
-                FrameLayout item = holder.getView(R.id.item_app);
+                final FrameLayout item = holder.getView(R.id.item_app);
                 FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         getScreenWidth() / 3);
                 item.setLayoutParams(params);
@@ -74,7 +79,12 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
             }
-        });
+        };
+        rvDesktop.setAdapter(adapter);
+
+        ItemTouchHelper.Callback callback = new RecycleItemTouchHelper(adapter);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+        itemTouchHelper.attachToRecyclerView(rvDesktop);
     }
 
     @Override
