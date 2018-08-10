@@ -8,6 +8,8 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.pax.paylauncher.utils.SpUtils;
+
 import java.util.List;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
@@ -33,19 +35,19 @@ public class RestartService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.i(TAG, "onStartCommand: ----------");
         startTask(2);
-        return START_STICKY;
+        return super.onStartCommand(intent, flags, startId);
     }
+
 
     private void startTask(int time) {
         Runnable command = new Runnable() {
             @Override
             public void run() {
-                boolean appRunning = isAppRunning(getApplicationContext(), getPackageName());
+                boolean appRunning = SpUtils.isRunning();
                 Log.i(TAG, "onStartCommand: App is running:" + appRunning);
                 if (!appRunning) {
-                    task.shutdownNow();
-                    task = null;
                     startActivity(getLaunchAppIntent(getPackageName(), true));
                 }
             }
@@ -74,7 +76,7 @@ public class RestartService extends Service {
     public boolean isAppRunning(Context context, String packageName) {
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> list = am.getRunningTasks(100);
-        if (list.size() <= 0) {
+        if (list.isEmpty()) {
             return false;
         }
         for (ActivityManager.RunningTaskInfo info : list) {
